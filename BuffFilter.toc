@@ -1,4 +1,8 @@
 ## Interface: 110005
 ## Title: BuffFilter
-## Notes: Hides specific buffs or debuffs from the player's buff bar.
+## Notes: Hides specific buffs and debuffs from the player's buff bar.
+## Author: Rubbur
+##
+## SavedVariables: BuffFilterDB
+
 BuffFilter.lua
