@@ -10,7 +10,7 @@ local function hideSpecificBuffs()
         print("|cFFFF0000No buff frames found.|r")
         return
     end
-    for i = 1, 40 do
+    for i = 1, 200 do
         -- Use C_UnitAuras.GetAuraDataByIndex to fetch buff details
         local aura = C_UnitAuras.GetAuraDataByIndex("player", i)
 
@@ -36,7 +36,7 @@ local function addBuff(spellId)
     if spellId and tonumber(spellId) then
         BuffFilterDB[tonumber(spellId)] = true
         print("|cFF00FF00Added|r spell ID " .. spellId .. " to the filter.")
-        hideSpecificBuffs()
+        C_Timer.After(1, hideSpecificBuffs)
     else
         print("Invalid spell ID.")
     end
@@ -49,7 +49,7 @@ local function removeBuff(spellId)
         if BuffFilterDB[spellId] then
             BuffFilterDB[spellId] = nil
             print("|cFFFF0000Removed|r spell ID " .. spellId .. " from the filter.")
-            hideSpecificBuffs()
+            C_Timer.After(1, hideSpecificBuffs)
         else
             print("Spell ID " .. spellId .. " not found in the filter.")
         end
@@ -74,6 +74,28 @@ local function listBuffs()
     end
 end
 
+-- Resets the filter database
+local function resetBuffFilter()
+    BuffFilterDB = {}
+    print("|cFF00FF00Buff Filter has been reset.|r")
+end
+
+-- Confirmation dialog for resetting the buff filter
+StaticPopupDialogs["BUFFFILTER_RESET_CONFIRM"] = {
+    text = "Are you sure you want to reset the filter list?",
+    button1 = "Yes",
+    button2 = "No",
+    OnAccept = function()
+        resetBuffFilter()
+        C_Timer.After(1, hideSpecificBuffs)
+    end,
+    OnCancel = function()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+}
+
 -- Handles slash commands
 local function handleSlashCommands(msg)
     local command, spellID = strsplit(" ", msg, 2)
@@ -83,11 +105,14 @@ local function handleSlashCommands(msg)
         removeBuff(spellID)
     elseif command == "list" then
         listBuffs()
+    elseif command == "reset" then
+        StaticPopup_Show("BUFFFILTER_RESET_CONFIRM")
     else
-        print("Usage:")
+        print("BuffFilter Usage:")
         print("/bf add [SpellID] - Add a buff to hide.")
         print("/bf remove [SpellID] - Remove a buff from the hidden list.")
         print("/bf list - List hidden buffs.")
+        print("/bf reset - Reset the filter list.")
     end
 end
 
