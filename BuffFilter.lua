@@ -3,15 +3,17 @@ if not BuffFilterDB then
     BuffFilterDB = {}
 end
 
--- Hides specific buffs from the player's buff bar
+-- Hides specific auras from the player's buff/debuff bar and reorganizes them
 local function hideSpecificBuffs()
     local buffFrames = { BuffFrame.AuraContainer:GetChildren() } -- Get all buff frames
     if #buffFrames == 0 then
         print("|cFFFF0000No buff frames found.|r")
         return
     end
+
+    local visibleCount = 0
+
     for i = 1, 200 do
-        -- Use C_UnitAuras.GetAuraDataByIndex to fetch buff details
         local aura = C_UnitAuras.GetAuraDataByIndex("player", i)
 
         if not aura then
@@ -21,11 +23,17 @@ local function hideSpecificBuffs()
         -- local name = aura.name -- Name of the buff
         local spellID = aura.spellId
 
-        -- Check if the buff is in the filter and hide it
+        -- Check if the aura (buff or debuff) is in the filter and hide it
         if BuffFilterDB[spellID] then
             local buff = buffFrames[i]
             if buff then
                 buff:Hide()
+            end
+        else
+            visibleCount = visibleCount + 1
+            local buff = buffFrames[i]
+            if buff then
+                buff:SetPoint("TOPLEFT", BuffFrame.AuraContainer, "TOPLEFT", (visibleCount - 1) * 40, 0)
             end
         end
     end
