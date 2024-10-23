@@ -1,0 +1,4 @@
+## Interface: 110005
+## Title: BuffFilter
+## Notes: Hides specific buffs or debuffs from the player's buff bar.
+BuffFilter.lua
