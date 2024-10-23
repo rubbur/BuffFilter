@@ -33,7 +33,7 @@ local function hideSpecificBuffs()
             visibleCount = visibleCount + 1
             local buff = buffFrames[i]
             if buff then
-                buff:SetPoint("TOPLEFT", BuffFrame.AuraContainer, "TOPLEFT", (visibleCount - 1) * 40, 0)
+                buff:SetPoint("TOPLEFT", BuffFrame.AuraContainer, "TOPLEFT", (visibleCount - 1) * -40, 0)
             end
         end
     end
@@ -75,7 +75,12 @@ local function listBuffs()
         print("Filtered Buffs:")
         for spellId in pairs(BuffFilterDB) do
             if spellId and tonumber(spellId) then
-                print("|cFFFFFF00" .. count .. "|r - Spell ID: " .. spellId)
+                local spellName = C_Spell.GetSpellInfo(spellId).name
+                if spellName then
+                    print("|cFFFFFF00" .. count .. "|r - Spell ID: " .. spellId .. " |cFF00FF00(" .. spellName .. ")|r")
+                else
+                    print("|cFFFFFF00" .. count .. "|r - Spell ID: " .. spellId)
+                end
                 count = count + 1
             end
         end
